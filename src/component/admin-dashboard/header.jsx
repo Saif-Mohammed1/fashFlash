@@ -1,7 +1,7 @@
-/*import Message from "../message/message";
-import GrowthAnalysis from "../util/growthAnalysis";
+/* import Message from "../message/message";
+ import GrowthAnalysis from "../util/growthAnalysis";
 
-const Header = async () => {
+ const Header = async () => {
   // Fetch data for each category
   const userResponse = await GrowthAnalysis("/dashboard/users", "createdAt");
   const productResponse = await GrowthAnalysis(
@@ -82,9 +82,9 @@ const Header = async () => {
       </div>
     </div>
   );
-};
+ };
 
-export default Header;
+ export default Header;
 */
 
 import React from "react";

@@ -326,7 +326,7 @@ export const Lists = ({ categories }) => {
                 <input
                   type="checkbox"
                   name="category"
-                  className="scale-150 mr-3"
+                  className="scale-150 mr-3 capitalize"
                   value={item}
                   defaultChecked={defaultCheckHandler("category", item)}
                   onClick={(e) => handelCheckbox(e.target)}

@@ -15,7 +15,7 @@ const AddProduct = ({ bg = true }) => {
   const [discount, setDiscount] = useState(0);
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(1);
   const [discountExpire, setDiscountExpire] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -96,13 +96,12 @@ const AddProduct = ({ bg = true }) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { name, price, category, description, discountExpire, stock } =
-      e.target.elements;
+    const { name, category, description, stock } = e.target.elements;
     try {
       if (parseFloat(discount) < 0) {
         throw new Error("Discount cannot contain a negative value.");
       }
-      if (parseFloat(price.value) < 0) {
+      if (parseFloat(price) < 0) {
         throw new Error("Price cannot contain a negative value.");
       }
       if (parseInt(stock.value) < 0) {
@@ -114,12 +113,12 @@ const AddProduct = ({ bg = true }) => {
       // Append regular fields
       formData.append("name", name.value);
       formData.append("stock", stock.value);
-      formData.append("price", price.value); // Corrected: Use price.value instead of price
-      formData.append("category", category.value);
+      formData.append("price", price); // Corrected: Use price.value instead of price
+      formData.append("category", category.value.toLowerCase());
       formData.append("description", description.value);
       formData.append("discount", discount); // Corrected: Use discount.value instead of discount
-      if (discountExpire.value) {
-        formData.append("discountExpire", discountExpire.value);
+      if (discountExpire) {
+        formData.append("discountExpire", discountExpire);
       }
 
       // Append image files
