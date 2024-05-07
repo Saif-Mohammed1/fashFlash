@@ -12,11 +12,14 @@ const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
     try {
       if (email) {
+        setLoading(true);
         if (token && !tokenChecked) {
           const restPassword = await fetchApi("/auth/forgetPassword", {
             method: "PATCH",
@@ -102,6 +105,8 @@ const ForgetPassword = () => {
           error ||
           "an expected error happen please try again later"
       );
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -147,7 +152,7 @@ const ForgetPassword = () => {
       <input
         type="submit"
         className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-        value="Reset Password"
+        value={loading ? "Resetting Password..." : "Reset Password"}
       />
     </form>
   );

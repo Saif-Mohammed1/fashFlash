@@ -11,11 +11,13 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const router = useRouter();
   const submitHandler = async (e) => {
     e.preventDefault();
     if (!email || !password) return;
+    setLoading(true);
     try {
       const data = await signIn("credentials", {
         email,
@@ -40,6 +42,8 @@ const LogIn = () => {
           error ||
           "an expected error happen please try again later"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,7 +114,7 @@ const LogIn = () => {
         </Link>
       </div>
       <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium p-2 rounded text-xl">
-        Login
+        {loading ? "Logging" : "Login"}{" "}
       </button>
     </Box>
   );
