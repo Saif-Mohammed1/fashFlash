@@ -297,6 +297,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { signOut } from "next-auth/react";
+import {
+  Lock as LockIcon,
+  PersonAdd as PersonAddIcon,
+} from "@mui/icons-material";
 
 const pages = [
   { label: "Cart", href: "/cart", icon: <ShoppingCartIcon /> },
@@ -474,35 +478,36 @@ function ResponsiveAppBar() {
               <>
                 <li>
                   <Link href="/auth/login">
-                    <span className="block px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
-                      LogIn
+                    <span className="flex gap-1 px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
+                      <LockIcon /> LogIn
                     </span>
                   </Link>
                 </li>
                 <li>
                   <Link href="/auth/register">
-                    <span className="block px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
-                      Register
+                    <span className="flex gap-1 px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
+                      <PersonAddIcon /> Register
                     </span>
                   </Link>
                 </li>
               </>
             )}
-            {settings.map(({ label, href, icon }) => (
-              <li key={label}>
-                {label === "Dashboard" && !admin ? null : (
-                  <Link
-                    href={href}
-                    onClick={() => (label === "Logout" ? LogOut() : null)} // Wrap the onClick event handler in an arrow function
-                  >
-                    <span className="flex gap-1 px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
-                      {icon}
-                      {label}
-                    </span>
-                  </Link>
-                )}
-              </li>
-            ))}
+            {user &&
+              settings.map(({ label, href, icon }) => (
+                <li key={label}>
+                  {label === "Dashboard" && !admin ? null : (
+                    <Link
+                      href={href}
+                      onClick={() => (label === "Logout" ? LogOut() : null)} // Wrap the onClick event handler in an arrow function
+                    >
+                      <span className="flex gap-1 px-4 py-2 text-gray-800 cursor-pointer hover:text-black">
+                        {icon}
+                        {label}
+                      </span>
+                    </Link>
+                  )}
+                </li>
+              ))}
           </ul>
         </div>
         <div
