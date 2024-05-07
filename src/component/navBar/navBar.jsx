@@ -321,7 +321,7 @@ function ResponsiveAppBar() {
   const [userAuth, setUserAuth] = useState(null);
   const [admin, setAdmin] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { user } = useContext(userContext);
+  const { user, setUser } = useContext(userContext);
   const userMenuRef = useRef(null);
   const smallMenuRef = useRef(null);
   const path = usePathname();
@@ -419,6 +419,7 @@ function ResponsiveAppBar() {
         method: "POST",
         credentials: "include",
       });
+      setUser(null);
       router.push("/auth/login");
     } catch (error) {
       toast.error(
@@ -492,7 +493,7 @@ function ResponsiveAppBar() {
                 </li>
               </>
             )}
-            {user &&
+            {userAuth &&
               settings.map(({ label, href, icon }) => (
                 <li key={label}>
                   {label === "Dashboard" && !admin ? null : (
@@ -551,10 +552,10 @@ function ResponsiveAppBar() {
             <div className="relative " ref={userMenuRef}>
               <button onClick={handleOpenUserMenu}>
                 <Avatar
-                  alt={user ? user.name : "Unknown"}
+                  alt={userAuth ? userAuth.name : "Unknown"}
                   src={
-                    user.photo.startsWith("http")
-                      ? user.photo
+                    userAuth.photo.startsWith("http")
+                      ? userAuth.photo
                       : "/users/user.jpg"
                   }
                 />

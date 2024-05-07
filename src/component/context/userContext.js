@@ -17,7 +17,7 @@ import { useSession } from "next-auth/react";
 export const userContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const { data: session, status } = useSession();
 
   // useEffect to wait for session loading
