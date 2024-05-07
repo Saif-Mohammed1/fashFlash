@@ -41,9 +41,7 @@ const queryParams = async (searchParams) => {
       headers: headers(),
     });
 
-    if (error) {
-      return <Message error={error} />;
-    }
+    if (error) throw error;
 
     return {
       data: data?.data || [],
@@ -51,14 +49,18 @@ const queryParams = async (searchParams) => {
       categories: data?.categories,
     };
   } catch (error) {
-    throw error;
+    return { error };
   }
 };
 
 export default async function Root({ searchParams }) {
-  const { data, pageCount, categories, fav } = await queryParams(searchParams);
+  const { data, pageCount, categories, error } = await queryParams(
+    searchParams
+  );
   const products = data;
-
+  if (error) {
+    return <Message error={error} />;
+  }
   // const categories = [...new Set(products.map((item) => item.category))];
 
   return (

@@ -114,7 +114,7 @@ const LogIn = () => {
         </Link>
       </div>
       <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium p-2 rounded text-xl">
-        {loading ? "Logging" : "Login"}{" "}
+        {loading ? "Logging..." : "Login"}{" "}
       </button>
     </Box>
   );
