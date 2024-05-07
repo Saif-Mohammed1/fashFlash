@@ -102,6 +102,8 @@ export default function ProductItem({ product, Delete }) {
     user,
   } = product;
 
+  console.log("session", session);
+  console.log("user", user);
   const [anchorEl, setAnchorEl] = useState(null);
   const [favorite, setFavorite] = useState(favorites || false);
   const [spinner, setSpinner] = useState(false);
@@ -263,32 +265,19 @@ export default function ProductItem({ product, Delete }) {
               <MenuItem onClick={handleClose}>
                 <Link href={`/report/${_id}`}>Report</Link>
               </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                hidden={
-                  user &&
-                  (user?._id === session?.user?._id ||
-                    session?.user?.role === "admin")
-                    ? false
-                    : true
-                }
-              >
-                <button onClick={() => onDelete(_id)}>Delete</button>
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                hidden={
-                  user &&
-                  (user?._id === session?.user?._id ||
-                    session?.user?.role === "admin")
-                    ? false
-                    : true
-                }
-              >
-                <button onClick={() => updateProductHandler(product)}>
-                  Update
-                </button>
-              </MenuItem>
+              {(session?.user && user?._id === session?.user?._id) ||
+              session?.user?.role === "admin" ? (
+                <>
+                  <MenuItem onClick={handleClose}>
+                    <button onClick={() => onDelete(_id)}>Delete</button>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <button onClick={() => updateProductHandler(product)}>
+                      Update
+                    </button>
+                  </MenuItem>
+                </>
+              ) : null}
               {/* Add more MenuItems here as needed */}
             </Menu>
           </>
