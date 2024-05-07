@@ -3,10 +3,7 @@ import { signOut } from "next-auth/react";
 const fetchApi = async (url, options = {}) => {
   try {
     // Make a fetch request
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_API_ENDPOINT + url,
-      options
-    );
+    const response = await fetch(process.env.API_ENDPOINT + url, options);
 
     if (!response.ok) {
       const err = await response.json();
