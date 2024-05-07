@@ -3,6 +3,7 @@ import fetchApi from "@/component/util/fetchApi";
 import { headers } from "next/headers";
 
 const Page = async ({ searchParams }) => {
+  if (!searchParams.session_id) return;
   const item = await fetchApi(
     "/stripe/checkout?session_id=" + searchParams.session_id,
     {

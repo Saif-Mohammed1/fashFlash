@@ -11,15 +11,18 @@ const data = async (id) => {
   try {
     const { data, error } = await fetchApi(`/product/${id}`);
     if (error) throw error;
-    return data?.data;
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async ({ params }) => {
   const id = params.id;
-  const product = await data(id);
+  const { data, error } = await data(id);
 
-  return <ProductDetailsMo product={product} />;
+  if (error) {
+    return <Message error={error} />;
+  }
+  return <ProductDetailsMo product={data} />;
 };
 export default Page;
