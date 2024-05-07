@@ -3,6 +3,7 @@
 import fetchApi from "@/component/util/fetchApi";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 const VerifyEmail = () => {
