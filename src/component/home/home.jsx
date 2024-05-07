@@ -232,7 +232,7 @@ export const Lists = ({ categories }) => {
   return (
     <div
       className={`
-       fixed z-30 ${
+       absolute z-30 ${
          openList ? "left-4" : "left-[-257px]"
        } transition-[left] h-fit duration-[2s] 
       bg-gray-200  md:static  md:bg-gray-200/70 
