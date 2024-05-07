@@ -14,7 +14,7 @@ const fetchApi = async (url, options = {}) => {
 
       throw {
         status: response.status,
-        message: err?.message || "Network response was not ok.",
+        message: err?.message || err || "Network response was not ok.",
       };
     }
     // Parse response JSON

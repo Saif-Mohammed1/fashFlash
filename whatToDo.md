@@ -21,3 +21,5 @@ first user will make an order then if it add dynamic it will create itself other
 4. update items to orderitems
 
 5. change dashboard
+
+rest the error in fetapi and error controll
