@@ -7,7 +7,7 @@ export const metadata = {
   title: "Product Details",
   description: "Product page ",
 };
-const data = async (id) => {
+const getData = async (id) => {
   try {
     const { data, error } = await fetchApi(`/product/${id}`);
     if (error) throw error;
@@ -18,7 +18,7 @@ const data = async (id) => {
 };
 const Page = async ({ params }) => {
   const id = params.id;
-  const { data, error } = await data(id);
+  const { data, error } = await getData(id);
 
   if (error) {
     return <Message error={error} />;
