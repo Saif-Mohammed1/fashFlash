@@ -18,9 +18,9 @@ const getData = async () => {
       throw error;
     }
 
-    return data?.data;
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async () => {
@@ -43,7 +43,10 @@ const Page = async () => {
 export default Page;
 
  */
-  const products = await getData();
+  const { data, error } = await getData();
+  if (error) {
+    return <Message error={error} />;
+  }
   return (
     <section>
       {/* <Link
@@ -53,8 +56,8 @@ export default Page;
         Add New Product
       </Link>{" "} */}
       <div className="grid col p-5 m-5">
-        {products &&
-          products.map((product) => {
+        {data &&
+          data.map((product) => {
             return <ProductItem product={product} key={product._id} />;
           })}
       </div>

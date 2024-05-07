@@ -16,19 +16,18 @@ const getData = async (id) => {
     if (error) {
       throw error;
     }
-    return data?.data || [];
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async ({ params }) => {
-  const address = await getData(params.id);
+  const { data, error } = await getData(params.id);
+  if (error) {
+    return <Message error={error} />;
+  }
   return (
-    <Addaddress
-      addresses={address || []}
-      button="edit"
-      title="Update Address"
-    /> //{/* <Error error={null} />; */}
+    <Addaddress addresses={data} button="edit" title="Update Address" /> //{/* <Error error={null} />; */}
   );
 };
 

@@ -16,15 +16,18 @@ const getData = async () => {
     if (error) {
       throw error;
     }
-    return data?.data || [];
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async () => {
-  const address = await getData();
+  const { data, error } = await getData();
+  if (error) {
+    return <Message error={error} />;
+  }
   return (
-    <Shipping address={address || []} /> //{/* <Error error={null} />; */}
+    <Shipping address={data} /> //{/* <Error error={null} />; */}
   );
 };
 

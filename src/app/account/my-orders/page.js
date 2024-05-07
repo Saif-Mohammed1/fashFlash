@@ -16,15 +16,17 @@ const getData = async () => {
     if (error) {
       throw error;
     }
-    return data?.data || [];
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async () => {
-  const orders = await getData();
-
-  return <Orders data={orders || []} />;
+  const { data, error } = await getData();
+  if (error) {
+    return <Message error={error} />;
+  }
+  return <Orders data={data} />;
 };
 
 export default Page;

@@ -10,14 +10,17 @@ const data = async (id) => {
   try {
     const { data, error } = await fetchApi(`/product/${id}`);
     if (error) throw error;
-    return data?.data.images;
+    return { data: data?.data.images || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async ({ params }) => {
   const id = params.id;
-  const Images = await data(id);
-  return <UpdateImage image={Images} id={id} />;
+  const { data, error } = await data(id);
+  if (error) {
+    return <Message error={error} />;
+  }
+  return <UpdateImage image={data} id={id} />;
 };
 export default Page;

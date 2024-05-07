@@ -16,16 +16,18 @@ const getData = async () => {
     if (error) {
       throw error;
     }
-    return data?.data || [];
+    return { data: data?.data || [] };
   } catch (error) {
-    return <Message error={error} />;
+    return { error };
   }
 };
 const Page = async () => {
-  const refund = await getData();
-
+  const { data, error } = await getData();
+  if (error) {
+    return <Message error={error} />;
+  }
   return (
-    <Orders title="Refunds" data={refund || []} /> //{/* <Error error={null} />; */}
+    <Orders title="Refunds" data={data} /> //{/* <Error error={null} />; */}
   );
 };
 
