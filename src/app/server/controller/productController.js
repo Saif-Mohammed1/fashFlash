@@ -73,15 +73,15 @@ export const createProduct = async (req, Model) => {
         const name = `user-${req.user._id}-${Date.now()}.${ext}`;
 
         // this does'nt work in vercel
-        // const uploadDir = path.join(
-        //   process.cwd(),
-        //   "public/tempProducts",
-        //   "/" + name
-        // );
+        const uploadDir = path.join(
+          process.cwd(),
+          "public/tempProducts",
+          "/" + name
+        );
 
         // this work in verce
-        const tempDir = os.tmpdir();
-        const uploadDir = path.join(tempDir, "/" + name);
+        // const tempDir = os.tmpdir();
+        // const uploadDir = path.join(tempDir, "/" + name);
         fs.writeFile(uploadDir, buffer);
         const { url, public_id } = await uploadImage(
           uploadDir,
