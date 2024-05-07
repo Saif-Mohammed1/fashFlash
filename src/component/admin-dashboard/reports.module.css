@@ -1,0 +1,30 @@
+.report {
+  min-width: 150px;
+  text-align: center;
+  /* flex: 1; */
+  /* border: 4px solid red; */
+}
+.report:nth-child(1) {
+  min-width: 260px;
+}
+.report:nth-child(2) {
+  min-width: 260px;
+}
+/* .report:nth-child(3) {
+  min-width: 140px;
+}
+.report:nth-last-child(-n + 3) {
+  min-width: 75px;
+}
+.report:last-child {
+  min-width: 150px;
+} */
+
+/* .report {
+  width: 70px;
+  max-width: 150px;
+}
+.report:nth-child(2) {
+  width: 100px;
+  max-width: 250px;
+} */

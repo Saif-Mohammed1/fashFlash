@@ -1,0 +1,29 @@
+/* .div {
+  max-width: 216px;
+  display: flex;
+  flex-direction: column;
+  border: solid;
+  padding: 14px;
+  text-align: unset;
+  height: 70vh;
+  justify-content: center;
+}
+.form {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.form input {
+  width: 100%;
+}
+.form input[type="submit"] {
+  background-color: blueviolet;
+  cursor: pointer;
+} */
+.col {
+  /* width: 100%; */
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  /* max-height: 300px; */
+  gap: 30px;
+  /* margin-left: 20px; */
+}

@@ -1,0 +1,26 @@
+.user {
+  min-width: 250px;
+  /* flex: 1; */
+  /* border: 4px solid red; */
+}
+/* .user:nth-child(1) {
+  min-width: 170px;
+} */
+.user:nth-child(3) {
+  min-width: 140px;
+}
+.user:nth-last-child(-n + 3) {
+  min-width: 75px;
+}
+.user:last-child {
+  min-width: 150px;
+}
+
+/* .user {
+  width: 70px;
+  max-width: 150px;
+}
+.user:nth-child(2) {
+  width: 100px;
+  max-width: 250px;
+} */

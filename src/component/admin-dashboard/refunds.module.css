@@ -1,0 +1,27 @@
+.refund {
+  min-width: 150px;
+  text-align: center;
+  /* flex: 1; */
+  /* border: 4px solid red; */
+}
+.refund:nth-child(1) {
+  min-width: 260px;
+}
+/* .refund:nth-child(3) {
+  min-width: 140px;
+}
+.refund:nth-last-child(-n + 3) {
+  min-width: 75px;
+}
+.refund:last-child {
+  min-width: 150px;
+} */
+
+/* .refund {
+  width: 70px;
+  max-width: 150px;
+}
+.refund:nth-child(2) {
+  width: 100px;
+  max-width: 250px;
+} */
