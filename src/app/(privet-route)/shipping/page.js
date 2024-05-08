@@ -22,13 +22,17 @@ const getData = async () => {
   }
 };
 const Page = async () => {
-  const { data, error } = await getData();
-  if (error) {
-    return <Message error={error} />;
+  try {
+    const { data, error } = await getData();
+    if (error) {
+      return <Message error={error} />;
+    }
+    return (
+      <Shipping address={data} /> //{/* <Error error={null} />; */}
+    );
+  } catch (error) {
+    throw error;
   }
-  return (
-    <Shipping address={data} /> //{/* <Error error={null} />; */}
-  );
 };
 
 export default Page;

@@ -112,31 +112,35 @@ const renderData = (label, data, growth) => (
 );
 
 const Header = async () => {
-  const dataPromises = [
-    fetchData("/dashboard/users", "Users"),
-    fetchData("/dashboard/products", "Products"),
-    fetchData("/dashboard/orders", "Orders"),
-    fetchData("/dashboard/refunds", "Refunds"),
-    fetchData("/dashboard/reports", "Reports"),
-  ];
+  try {
+    const dataPromises = [
+      fetchData("/dashboard/users", "Users"),
+      fetchData("/dashboard/products", "Products"),
+      fetchData("/dashboard/orders", "Orders"),
+      fetchData("/dashboard/refunds", "Refunds"),
+      fetchData("/dashboard/reports", "Reports"),
+    ];
 
-  const responses = await Promise.all(dataPromises);
+    const responses = await Promise.all(dataPromises);
 
-  // Check for errors in any of the responses and return specific error message
-  const errorResponse = responses.find((response) => response.error);
-  if (errorResponse) {
-    return <Message data={errorResponse.error} />;
+    // Check for errors in any of the responses and return specific error message
+    const errorResponse = responses.find((response) => response.error);
+    if (errorResponse) {
+      return <Message data={errorResponse.error} />;
+    }
+
+    return (
+      <div className="flex justify-between gap-3 overflow-x-auto no-scrollbar mb-2">
+        {responses.map((response, index) => (
+          <React.Fragment key={index}>
+            {renderData(response.label, response.data, response.growth)}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  } catch (error) {
+    throw error;
   }
-
-  return (
-    <div className="flex justify-between gap-3 overflow-x-auto no-scrollbar mb-2">
-      {responses.map((response, index) => (
-        <React.Fragment key={index}>
-          {renderData(response.label, response.data, response.growth)}
-        </React.Fragment>
-      ))}
-    </div>
-  );
 };
 
 export default Header;

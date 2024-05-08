@@ -54,23 +54,27 @@ const queryParams = async (searchParams) => {
 };
 
 export default async function Root({ searchParams }) {
-  const { data, pageCount, categories, error } = await queryParams(
-    searchParams
-  );
-  const products = data;
-  if (error) {
-    return <Message error={error} />;
+  try {
+    const { data, pageCount, categories, error } = await queryParams(
+      searchParams
+    );
+    const products = data;
+    if (error) {
+      return <Message error={error} />;
+    }
+    // const categories = [...new Set(products.map((item) => item.category))];
+
+    return (
+      // <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
+
+      <Home
+        products={products}
+        categories={categories}
+        pageCount={pageCount}
+        //  fav={fav}
+      />
+    );
+  } catch (error) {
+    throw error;
   }
-  // const categories = [...new Set(products.map((item) => item.category))];
-
-  return (
-    // <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
-
-    <Home
-      products={products}
-      categories={categories}
-      pageCount={pageCount}
-      //  fav={fav}
-    />
-  );
 }

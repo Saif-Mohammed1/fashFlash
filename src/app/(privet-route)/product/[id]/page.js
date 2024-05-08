@@ -17,12 +17,16 @@ const getData = async (id) => {
   }
 };
 const Page = async ({ params }) => {
-  const id = params.id;
-  const { data, error } = await getData(id);
+  try {
+    const id = params.id;
+    const { data, error } = await getData(id);
 
-  if (error) {
-    return <Message error={error} />;
+    if (error) {
+      return <Message error={error} />;
+    }
+    return <ProductDetailsMo product={data} />;
+  } catch (error) {
+    throw error;
   }
-  return <ProductDetailsMo product={data} />;
 };
 export default Page;

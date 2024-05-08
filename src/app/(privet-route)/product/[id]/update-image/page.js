@@ -17,10 +17,14 @@ const getData = async (id) => {
 };
 const Page = async ({ params }) => {
   const id = params.id;
-  const { data, error } = await getData(id);
-  if (error) {
-    return <Message error={error} />;
+  try {
+    const { data, error } = await getData(id);
+    if (error) {
+      return <Message error={error} />;
+    }
+    return <UpdateImage image={data} id={id} />;
+  } catch (error) {
+    throw error;
   }
-  return <UpdateImage image={data} id={id} />;
 };
 export default Page;

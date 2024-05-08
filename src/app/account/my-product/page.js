@@ -43,25 +43,29 @@ const Page = async () => {
 export default Page;
 
  */
-  const { data, error } = await getData();
-  if (error) {
-    return <Message error={error} />;
-  }
-  return (
-    <section>
-      {/* <Link
+  try {
+    const { data, error } = await getData();
+    if (error) {
+      return <Message error={error} />;
+    }
+    return (
+      <section>
+        {/* <Link
         href={""}
         className=" bg-blue-500 hover:bg-blue-500 p-4 mt-3 text-center"
       >
         Add New Product
       </Link>{" "} */}
-      <div className="grid col p-5 m-5">
-        {data &&
-          data.map((product) => {
-            return <ProductItem product={product} key={product._id} />;
-          })}
-      </div>
-    </section>
-  );
+        <div className="grid col p-5 m-5">
+          {data &&
+            data.map((product) => {
+              return <ProductItem product={product} key={product._id} />;
+            })}
+        </div>
+      </section>
+    );
+  } catch (error) {
+    throw error;
+  }
 };
 export default Page;

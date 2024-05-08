@@ -48,20 +48,24 @@ const queryParams = async (searchParams) => {
   }
 };
 const Page = async ({ searchParams }) => {
-  const { data, pageCount, error } = await queryParams(searchParams);
+  try {
+    const { data, pageCount, error } = await queryParams(searchParams);
 
-  if (error) {
-    return <Message error={error} />;
+    if (error) {
+      return <Message error={error} />;
+    }
+    return (
+      <>
+        {" "}
+        <Orders data={data} title="Orders" />
+        <Paginate pageCount={pageCount} />
+        {/* <Products orders={data?.data} /> */}
+        {/* <Cher /> */}
+      </>
+    );
+  } catch (error) {
+    throw error;
   }
-  return (
-    <>
-      {" "}
-      <Orders data={data} title="Orders" />
-      <Paginate pageCount={pageCount} />
-      {/* <Products orders={data?.data} /> */}
-      {/* <Cher /> */}
-    </>
-  );
 };
 
 export default Page;

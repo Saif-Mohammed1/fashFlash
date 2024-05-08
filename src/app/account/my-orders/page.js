@@ -22,11 +22,15 @@ const getData = async () => {
   }
 };
 const Page = async () => {
-  const { data, error } = await getData();
-  if (error) {
-    return <Message error={error} />;
+  try {
+    const { data, error } = await getData();
+    if (error) {
+      return <Message error={error} />;
+    }
+    return <Orders data={data} />;
+  } catch (error) {
+    throw error;
   }
-  return <Orders data={data} />;
 };
 
 export default Page;
