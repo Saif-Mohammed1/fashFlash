@@ -73,7 +73,7 @@ const sendErrorProd = (err, req) => {
       {
         status: "error",
         message:
-          err.message ||
+          // err.message ||
           "Something went very wrong!. If the error persists, please let us know. ",
       },
       { status: 500 }
