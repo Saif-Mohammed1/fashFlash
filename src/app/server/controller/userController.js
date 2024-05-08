@@ -2,6 +2,7 @@ import AppError from "@/component/util/appError";
 import User from "../models/user.model";
 import { createSendToken } from "./authController";
 import { destroyImage } from "@/component/util/cloudinary";
+import { UTApi } from "uploadthing/server";
 
 // export const verifyEmail = async (req) => {
 //   try {
@@ -265,7 +266,13 @@ export const deleteProductByUser = async (req, Model) => {
       throw new AppError("No document found with that ID", 404);
     }
     if (doc.public_id) {
-      await destroyImage(doc.public_id);
+      const utapi = new UTApi();
+      for (const public_id of doc.public_id) {
+        await utapi.deleteFiles(public_id);
+
+        // for cloudainry
+        // await destroyImage(public_id);
+      }
     }
     await Model.findByIdAndDelete(req.id); // or Model.findByIdAndDelete(req.params.id) if you prefer
 

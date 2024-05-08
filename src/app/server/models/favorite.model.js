@@ -1,5 +1,6 @@
 import { Schema, model, models } from "mongoose";
-
+import User from "./user.model";
+import Product from "./product.model";
 const FavoriteSchema = new Schema({
   user: {
     type: Schema.ObjectId,

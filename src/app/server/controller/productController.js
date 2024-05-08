@@ -1,8 +1,9 @@
 import AppError from "@/component/util/appError";
-import { destroyImage, uploadImage } from "@/component/util/cloudinary";
-import path from "path";
-import os from "os";
-import fs from "fs/promises";
+// import { destroyImage, uploadImage } from "@/component/util/cloudinary";
+// import path from "path";
+// import os from "os";
+// import fs from "fs/promises";
+import { UTApi } from "uploadthing/server";
 export const createProduct = async (req, Model) => {
   let doc;
   try {
@@ -43,65 +44,67 @@ export const createProduct = async (req, Model) => {
       extractedData.images = singleImage;
     }
 
-    let imgUrl = [];
-    let publicId = [];
-    if (extractedData.images) {
-      if (extractedData.images.length > 4) {
-        throw new AppError("Maximum image number is 4.", 400);
-      }
-      const allowedTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/gif",
-      ]; // Add the third specified image type here
+    console.log("extractedData", extractedData);
+    //for clodianry
+    // let imgUrl = [];
+    // let publicId = [];
+    // // if (extractedData.images) {
+    // //   if (extractedData.images.length > 4) {
+    // //     throw new AppError("Maximum image number is 4.", 400);
+    // //   }
+    // //   const allowedTypes = [
+    // //     "image/png",
+    // //     "image/jpeg",
+    // //     "image/jpg",
+    // //     "image/gif",
+    // //   ]; // Add the third specified image type here
 
-      for (const img of extractedData.images) {
-        if (!allowedTypes.includes(img.type)) {
-          throw new AppError("Unsupported file type.", 400);
-        }
+    // //   for (const img of extractedData.images) {
+    // //     if (!allowedTypes.includes(img.type)) {
+    // //       throw new AppError("Unsupported file type.", 400);
+    // //     }
 
-        // Check file size (4 MB = 4 * 1024 * 1024 bytes)
-        if (img.size > 4 * 1024 * 1024) {
-          throw new AppError("Maximum file size is 4MB.", 400);
-        }
+    // //     // Check file size (4 MB = 4 * 1024 * 1024 bytes)
+    // //     if (img.size > 4 * 1024 * 1024) {
+    // //       throw new AppError("Maximum file size is 4MB.", 400);
+    // //     }
 
-        const bytes = await img.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+    // //     const bytes = await img.arrayBuffer();
+    // //     const buffer = Buffer.from(bytes);
 
-        const ext = img.type.split("/")[1];
-        const name = `user-${req.user._id}-${Date.now()}.${ext}`;
+    // //     const ext = img.type.split("/")[1];
+    // //     const name = `user-${req.user._id}-${Date.now()}.${ext}`;
 
-        // this does'nt work in vercel
-        const uploadDir = path.join(
-          process.cwd(),
-          "public/tempProducts",
-          "/" + name
-        );
+    // //     // this does'nt work in vercel
+    // //     const uploadDir = path.join(
+    // //       process.cwd(),
+    // //       "public/tempProducts",
+    // //       "/" + name
+    // //     );
 
-        // this work in verce
-        // const tempDir = os.tmpdir();
-        // const uploadDir = path.join(tempDir, "/" + name);
-        fs.writeFile(uploadDir, buffer);
-        const { url, public_id } = await uploadImage(
-          uploadDir,
-          "shop/products"
-        );
-        imgUrl.push(url);
-        publicId.push(public_id);
-        // Delete the file after getting the URL
-        // fs.unlink(uploadDir, (err) => {
-        //   if (err) {
-        //     //console.error("Error deleting file:", err);
-        //     throw err;
-        //   }
-        // });
-      }
-      if (imgUrl.length > 0) {
-        extractedData.images = imgUrl;
-        extractedData.public_id = publicId;
-      }
-    }
+    // //     // this work in verce
+    // //     // const tempDir = os.tmpdir();
+    // //     // const uploadDir = path.join(tempDir, "/" + name);
+    // //     fs.writeFile(uploadDir, buffer);
+    // //     const { url, public_id } = await uploadImage(
+    // //       uploadDir,
+    // //       "shop/products"
+    // //     );
+    // //     imgUrl.push(url);
+    // //     publicId.push(public_id);
+    // //     // Delete the file after getting the URL
+    // //     // fs.unlink(uploadDir, (err) => {
+    // //     //   if (err) {
+    // //     //     //console.error("Error deleting file:", err);
+    // //     //     throw err;
+    // //     //   }
+    // //     // });
+    // //   }
+    // //   if (imgUrl.length > 0) {
+    // //     extractedData.images = imgUrl;
+    // //     extractedData.public_id = publicId;
+    // //   }
+    // // }
     doc = await Model.create({ ...extractedData, user: req.user._id });
 
     return {
@@ -123,10 +126,15 @@ export const deleteProduct = async (req, Model) => {
       throw new AppError("No document found with that ID", 404);
     }
     if (doc.public_id) {
+      const utapi = new UTApi();
       for (const public_id of doc.public_id) {
-        await destroyImage(public_id);
+        await utapi.deleteFiles(public_id);
+
+        // for cloudainry
+        //   await destroyImage(public_id);
       }
     }
+
     await Model.findByIdAndDelete(req.id);
 
     return {
@@ -251,61 +259,66 @@ export const updateProductImage = async (req, Model) => {
     const formData = await req.formData();
 
     // Initialize an empty array to store new image URLs and public IDs
-    const newImages = [];
-    const newPublicIds = [];
-    if (formData.getAll("images").length > 4) {
-      throw new AppError("Maximum image number is 4.", 400);
-    } // Iterate over each uploaded image
-    for (const [name, image] of formData.entries()) {
-      // Validate the image
-      // Check file type
-      const allowedTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/gif",
-      ];
-      if (!allowedTypes.includes(image.type)) {
-        throw new AppError("Unsupported file type.", 400);
-      }
+    const newImages = formData.getAll("images");
+    const newPublicIds = formData.getAll("public_id");
 
-      // Check file size (4 MB = 4 * 1024 * 1024 bytes)
-      if (image.size > 4 * 1024 * 1024) {
-        throw new AppError("Maximum file size is 4MB.", 400);
-      }
+    // if (formData.getAll("images").length > 4) {
+    //   throw new AppError("Maximum image number is 4.", 400);
+    // } // Iterate over each uploaded image
+    // for (const [name, image] of formData.entries()) {
+    //   // Validate the image
+    //   // Check file type
+    //   const allowedTypes = [
+    //     "image/png",
+    //     "image/jpeg",
+    //     "image/jpg",
+    //     "image/gif",
+    //   ];
+    //   if (!allowedTypes.includes(image.type)) {
+    //     throw new AppError("Unsupported file type.", 400);
+    //   }
 
-      // Process the image
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+    //   // Check file size (4 MB = 4 * 1024 * 1024 bytes)
+    //   if (image.size > 4 * 1024 * 1024) {
+    //     throw new AppError("Maximum file size is 4MB.", 400);
+    //   }
 
-      const ext = image.type.split("/")[1];
-      const name = `user-${req.user._id}-${Date.now()}.${ext}`;
-      // this does'nt work in vercel
-      // const uploadDir = path.join(
-      //   process.cwd(),
-      //   "public/tempProducts",
-      //   "/" + name
-      // );
+    //   // Process the image
+    //   const bytes = await image.arrayBuffer();
+    //   const buffer = Buffer.from(bytes);
 
-      // this work in verce
-      const tempDir = os.tmpdir();
-      const uploadDir = path.join(tempDir, "/" + name);
-      fs.writeFile(uploadDir, buffer);
-      // Upload the image to storage and obtain URL and public ID
-      const { url, public_id } = await uploadImage(
-        uploadDir,
-        // name,
-        "shop/products"
-      );
+    //   const ext = image.type.split("/")[1];
+    //   const name = `user-${req.user._id}-${Date.now()}.${ext}`;
+    //   // this does'nt work in vercel
+    //   // const uploadDir = path.join(
+    //   //   process.cwd(),
+    //   //   "public/tempProducts",
+    //   //   "/" + name
+    //   // );
 
-      // Add the URL and public ID to the arrays
-      newImages.push(url);
-      newPublicIds.push(public_id);
-    }
+    //   // this work in verce
+    //   const tempDir = os.tmpdir();
+    //   const uploadDir = path.join(tempDir, "/" + name);
+    //   fs.writeFile(uploadDir, buffer);
+    //   // Upload the image to storage and obtain URL and public ID
+    //   const { url, public_id } = await uploadImage(
+    //     uploadDir,
+    //     // name,
+    //     "shop/products"
+    //   );
+
+    //   // Add the URL and public ID to the arrays
+    //   newImages.push(url);
+    //   newPublicIds.push(public_id);
+    // }
+
     // If the document has public IDs, delete the corresponding images
     if (doc.public_id && doc.public_id.length > 0) {
+      const utapi = new UTApi();
       for (const public_id of doc.public_id) {
-        await destroyImage(public_id);
+        await utapi.deleteFiles(public_id);
+
+        // await destroyImage(public_id);
       }
     }
     // Update the document with the new image URLs and public IDs

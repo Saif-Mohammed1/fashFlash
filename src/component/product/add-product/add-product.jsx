@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import fetchApi from "@/component/util/fetchApi";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import ImageUploader from "@/component/imageUploader/imagUploader";
 // import { uploadImage } from "@/component/util/cloudinary";
 const getDefaultExpireDate = () => {
   const today = new Date();
@@ -14,7 +15,7 @@ const getDefaultExpireDate = () => {
 const AddProduct = ({ bg = true }) => {
   const [discount, setDiscount] = useState(0);
   const [images, setImages] = useState([]);
-  const [imagesPreview, setImagesPreview] = useState([]);
+  // const [imagesPreview, setImagesPreview] = useState([]);
   const [price, setPrice] = useState(1);
   const [discountExpire, setDiscountExpire] = useState("");
   const [loading, setLoading] = useState(false);
@@ -107,6 +108,9 @@ const AddProduct = ({ bg = true }) => {
       if (parseInt(stock.value) < 0) {
         throw new Error("Stock cannot contain a negative value.");
       }
+      if (images.length < 1) {
+        throw new Error("You need at least one Image.");
+      }
 
       const formData = new FormData();
 
@@ -123,7 +127,8 @@ const AddProduct = ({ bg = true }) => {
 
       // Append image files
       images.forEach((file) => {
-        formData.append("images", file); // Ensure 'file' is the File object, not a URL
+        formData.append("images", file.url); // Ensure 'file' is the File object, not a URL
+        formData.append("public_id", file.key); // Ensure 'file' is the File object, not a URL
       });
 
       const { data, error } = await fetchApi("/product", {
@@ -142,31 +147,56 @@ const AddProduct = ({ bg = true }) => {
     } finally {
       setLoading(false);
     }
-  };
-  const deletePic = (index) => {
+  }; //uploadthing
+  const deletePic = async (key) => {
+    try {
+      const { data, error } = await fetchApi("/uploadthing/" + key, {
+        method: "DELETE",
+      });
+      if (error) throw error;
+
+      toast.success("image deleted successfully 👌");
+
+      // Remove the image from the files array
+      setImages((oldImages) => oldImages.filter((img) => img.key !== key));
+    } catch (error) {
+      toast.error(
+        error?.message ||
+          error ||
+          "An unexpected error occurred. Please try again later."
+      );
+    }
     // Remove the image from the previews array
-    setImagesPreview((oldImagesPreview) =>
-      oldImagesPreview.filter((_, i) => i !== index)
-    );
-
-    // Remove the image from the files array
-    setImages((oldImages) => oldImages.filter((_, i) => i !== index));
-  };
-  const handleFilesChange = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          setImagesPreview((oldImag) => [...oldImag, reader.result]);
-        }
-      };
-
-      reader.readAsDataURL(file);
-      setImages((oldImag) => [...oldImag, file]);
-    });
   };
 
+  //cloudanirt
+  // const deletePic = (index) => {
+  //   // Remove the image from the previews array
+  //   // setImagesPreview((oldImagesPreview) =>
+  //   //   oldImagesPreview.filter((_, i) => i !== index)
+  //   // );
+
+  //   // Remove the image from the files array
+  //   setImages((oldImages) => oldImages.filter((_, i) => i !== index));
+  // };
+  // const handleFilesChange = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   files.forEach((file) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       if (reader.readyState === 2) {
+  //         setImagesPreview((oldImag) => [...oldImag, reader.result]);
+  //       }
+  //     };
+
+  //     reader.readAsDataURL(file);
+  //     setImages((oldImag) => [...oldImag, file]);
+  //   });
+  // };
+  const handleImageUpload = (files) => {
+    // files.forEach((file) =>
+    setImages((oldImag) => [...oldImag, ...files]);
+  };
   return (
     <form
       onSubmit={submitHandler}
@@ -200,7 +230,7 @@ const AddProduct = ({ bg = true }) => {
       <div>
         {" "}
         <h5>Product Image</h5>
-        <input
+        {/* <input
           name="Images"
           type="file"
           className={`${
@@ -214,25 +244,26 @@ const AddProduct = ({ bg = true }) => {
             handleFilesChange
             //setUploadFiles(e.target.value)
           }
-        />
+        /> */}{" "}
+        <ImageUploader onFilesSelect={handleImageUpload} />
         <div>
-          {imagesPreview.length > 0 ? (
+          {images.length > 0 ? (
             <div className="flex flex-wrap gap-4 mt-2">
-              {imagesPreview.map((file, inx) => (
+              {images.map((file, inx) => (
                 <div key={inx} className=" relative">
                   <Image
                     // className=""
-                    src={file}
+                    src={file.url}
                     width={100}
                     height={100}
                     alt="product image"
-                    objectFit="cover"
+                    priority
                     // style={{ objectFit: "cover" }} // Adjust styling as needed
                     // onLoadingComplete={() => URL.revokeObjectURL(file)}
                   />
                   <button
                     type="button"
-                    onClick={() => deletePic(inx)}
+                    onClick={() => deletePic(file.key)}
                     className="absolute top-0 text-sm px-1 -right-2 rounded-full bg-red-400 hover:bg-red-600"
                   >
                     X

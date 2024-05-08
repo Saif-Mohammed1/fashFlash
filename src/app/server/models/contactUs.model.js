@@ -1,5 +1,5 @@
 import { Schema, model, models } from "mongoose";
-
+import User from "./user.model";
 const ContactUsSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,

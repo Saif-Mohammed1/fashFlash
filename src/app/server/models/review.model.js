@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
+import User from "./user.model";
 import Product from "./product.model";
-
 const ReviewSchema = new Schema(
   {
     user: {

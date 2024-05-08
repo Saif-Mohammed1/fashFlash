@@ -1,5 +1,6 @@
 import { Schema, model, models } from "mongoose";
-
+import User from "./user.model";
+import Address from "./address.model";
 const OrderSchema = new Schema({
   user: {
     type: Schema.ObjectId,

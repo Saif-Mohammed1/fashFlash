@@ -1,5 +1,6 @@
 import { Schema, model, models } from "mongoose";
-
+import User from "./user.model";
+import Review from "./review.model";
 const ProductSchema = new Schema(
   {
     name: {

@@ -1,5 +1,6 @@
 import { Schema, model, models } from "mongoose";
-
+import User from "./user.model";
+import Product from "./product.model";
 const ReportSchema = new Schema({
   user: {
     type: Schema.ObjectId,

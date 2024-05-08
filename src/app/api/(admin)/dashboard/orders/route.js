@@ -5,7 +5,6 @@ import {
   getAll,
 } from "@/app/server/controller/factoryController";
 import { connectDB } from "@/app/server/db/db";
-import Address from "@/app/server/models/address.model";
 import Order from "@/app/server/models/order.model ";
 import { NextResponse } from "next/server";
 
