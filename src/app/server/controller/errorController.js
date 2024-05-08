@@ -72,7 +72,8 @@ const sendErrorProd = (err, req) => {
     return NextResponse.json(
       {
         status: "error",
-        message: err.message || "Something went very wrong!",
+        message:
+          "Something went very wrong!. If the error persists, please let us know. ",
       },
       { status: 500 }
     );
