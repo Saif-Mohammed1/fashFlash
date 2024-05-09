@@ -16,7 +16,7 @@ export default function Error({ error, reset }) {
       <div className="bg-red-500 p-8 rounded-lg shadow-lg text-white">
         <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong.</h2>
         <p className="text-lg mb-4">
-          {errors?.message || errors || "Unknown error occurred."}
+          {errors?.message || "Unknown error occurred."}
         </p>
         {/* Render a button to attempt to recover by resetting the error */}
         {/* This will reload the page or navigate to another route */}

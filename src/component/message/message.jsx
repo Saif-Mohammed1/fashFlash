@@ -40,7 +40,7 @@ const Message = ({ data, error, message, redirect = false }) => {
     }
   }, [data, error]);
 
-  return null;
+  // return null;
 };
 
 export default Message;

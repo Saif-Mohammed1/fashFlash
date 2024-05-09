@@ -58,8 +58,8 @@ const queryParams = async (searchParams) => {
     return {
       data: data?.data || [],
       //  fav: fav?.data?.data || [],
-      pageCount: data?.pageCount,
-      categories: data?.categories,
+      pageCount: data?.pageCount || 1,
+      // categories: data?.categories,
     };
   } catch (error) {
     return { error };

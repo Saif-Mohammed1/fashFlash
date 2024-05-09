@@ -118,7 +118,7 @@ const AddProduct = ({ bg = true }) => {
       formData.append("name", name.value);
       formData.append("stock", stock.value);
       formData.append("price", price); // Corrected: Use price.value instead of price
-      formData.append("category", category.value.toLowerCase());
+      formData.append("category", category.value);
       formData.append("description", description.value);
       formData.append("discount", discount); // Corrected: Use discount.value instead of discount
       if (discountExpire) {
