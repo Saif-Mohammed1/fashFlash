@@ -76,6 +76,8 @@ const ProductDetails = ({ product }) => {
   const addProductHandler = async () => {
     try {
       await addProductToCart(product);
+            toast.success("Product has been added successfully");
+
     } catch (error) {
       toast.error(
         error?.message ||
@@ -230,7 +232,7 @@ const ProductDetails = ({ product }) => {
               </p>
               <div className="flex justify-between items-center mt-auto">
                 <button
-                  disabled={isInStock}
+                  disabled={!isInStock}
                   onClick={addProductHandler}
                   // color="primary" //{/* Assuming you want a primary color, adjust as needed */}
                   // sx={{
