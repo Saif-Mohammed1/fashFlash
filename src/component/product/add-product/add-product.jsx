@@ -105,7 +105,7 @@ const AddProduct = ({ bg = true }) => {
       if (parseFloat(price) < 0) {
         throw new Error("Price cannot contain a negative value.");
       }
-      if (parseInt(stock.value) < 0) {
+      if (parseInt(stock.value) <= 0) {
         throw new Error("Stock cannot contain a negative value.");
       }
       if (images.length < 1) {
@@ -136,8 +136,19 @@ const AddProduct = ({ bg = true }) => {
         body: formData,
       });
       if (error) throw error;
+      // Reset form fields after successful submission
+      name.value = "";
+      stock.value = "";
+      setPrice(1);
+      category.value = "";
+      description.value = "";
+      setDiscount(0);
+      if (discountExpire) {
+        setDiscountExpire("");
+      }
+      setImages([]);
 
-      toast.success("Add Product success 👌");
+      toast.success("Product has been added successfully 👌");
     } catch (error) {
       toast.error(
         error?.message ||
