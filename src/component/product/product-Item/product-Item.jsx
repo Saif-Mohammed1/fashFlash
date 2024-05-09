@@ -102,8 +102,6 @@ export default function ProductItem({ product, Delete }) {
     user,
   } = product;
 
-  console.log("session", session);
-  console.log("user", user);
   const [anchorEl, setAnchorEl] = useState(null);
   const [favorite, setFavorite] = useState(favorites || false);
   const [spinner, setSpinner] = useState(false);
