@@ -97,6 +97,7 @@ export default function ProductItem({ product, Delete }) {
     ratingsAverage,
     description,
     ratingsQuantity,
+    stock,
     createdAt,
     favorites,
     user,
@@ -347,7 +348,11 @@ export default function ProductItem({ product, Delete }) {
             {/* <ContentPaste /> */}
           </IconButton>
           <Tooltip title="Add to cart">
-            <IconButton aria-label="add to cart" onClick={addProductHandler}>
+            <IconButton
+              aria-label="add to cart"
+              onClick={addProductHandler}
+              disabled={stock >= 1 ? false : true}
+            >
               {spinner ? (
                 <svg
                   aria-hidden="true"
