@@ -1,5 +1,3 @@
-import { signOut } from "next-auth/react";
-
 const fetchApi = async (url, options = {}) => {
   if (!process.env.NEXT_PUBLIC_API_ENDPOINT) return;
   try {
@@ -23,10 +21,8 @@ const fetchApi = async (url, options = {}) => {
 
     return { data };
   } catch (error) {
-    if (error.status === 401) {
-      await signOut();
-    }
-    return { error };
+    // return { error };
+    throw error;
   }
 };
 export default fetchApi;

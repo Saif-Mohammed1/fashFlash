@@ -4,7 +4,6 @@ import { getOne, updateOne } from "@/app/server/controller/factoryController";
 import { deleteProductByUser } from "@/app/server/controller/userController";
 import { connectDB } from "@/app/server/db/db";
 import Product from "@/app/server/models/product.model";
-import Reviews from "@/app/server/models/review.model";
 import { NextResponse } from "next/server";
 
 export const GET = async (req, { params }) => {
