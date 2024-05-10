@@ -40,7 +40,7 @@ const Header = async () => {
 
     // Render the component with fetched data if no errors
     return (
-      <div className="flex justify-between gap-3 overflow-auto no-scrollbar">
+      <div className="flex justify-between gap-3 overflow-auto no-scrollbar mb-2">
         <div className="txt">
           <p>Total Users</p>
           <p>{userResponse.data}</p>
