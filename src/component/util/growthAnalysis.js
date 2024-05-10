@@ -122,8 +122,13 @@ export const GrowthAnalysis = async (endpoint, dateField) => {
   } catch (error) {
     //console.log("+++++++++++++++++++++++error++++++++++++++++++", error);
     return {
-      error: error?.message || error,
+      error: {
+        message:
+          error?.message || "an expected error happened please try again later", // error,
+        status: error?.status,
+      },
     };
+    // throw error;
   }
 };
 

@@ -48,7 +48,7 @@ const ReviewSection = ({ reviews, productId, user }) => {
           ))}
         </div>
       )}
-      <div className={user.email ? "" : "hidden"}>
+      <div className={user?.email ? "" : "hidden"}>
         <CreateReview productId={productId} reviewsLength={reviews.length} />{" "}
       </div>
     </div>

@@ -1,92 +1,105 @@
-/* import Message from "../message/message";
- import GrowthAnalysis from "../util/growthAnalysis";
+import Message from "../message/message";
+import GrowthAnalysis from "../util/growthAnalysis";
 
- const Header = async () => {
+const Header = async () => {
+  try {
+    const userResponse = await GrowthAnalysis("/dashboard/users", "createdAt");
+    const productResponse = await GrowthAnalysis(
+      "/dashboard/products",
+      "createdAt"
+    );
+    const orderResponse = await GrowthAnalysis(
+      "/dashboard/orders",
+      "createdAt"
+    );
+    const refundResponse = await GrowthAnalysis(
+      "/dashboard/refunds",
+      "createdAt"
+    );
+    const reportResponse = await GrowthAnalysis(
+      "/dashboard/reports",
+      "createdAt"
+    );
+
+    // Check for errors in any of the responses and return specific error message
+    if (userResponse.error) {
+      return <Message error={userResponse.error} />;
+    }
+    if (productResponse.error) {
+      return <Message error={productResponse.error} />;
+    }
+    if (orderResponse.error) {
+      return <Message error={orderResponse.error} />;
+    }
+    if (refundResponse.error) {
+      return <Message error={refundResponse.error} />;
+    }
+    if (reportResponse.error) {
+      return <Message error={reportResponse.error} />;
+    }
+
+    // Render the component with fetched data if no errors
+    return (
+      <div className="flex justify-between gap-3 overflow-auto no-scrollbar">
+        <div className="txt">
+          <p>Total Users</p>
+          <p>{userResponse.data}</p>
+          <p className="text-[13px]">
+            <span className="text-green-500">{userResponse.stats.growth}%</span>{" "}
+            more than last week
+          </p>
+        </div>
+        <div className="txt">
+          <p>Total Products</p>
+          <p>{productResponse.data}</p>
+          <p className="text-[13px]">
+            <span className="text-green-500">
+              {productResponse.stats.growth}%
+            </span>{" "}
+            more than last week
+          </p>
+        </div>
+        <div className="txt">
+          <p>Total Orders</p>
+          <p>{orderResponse.data}</p>
+          <p className="text-[13px]">
+            <span className="text-green-500">
+              {orderResponse.stats.growth}%
+            </span>{" "}
+            more than last week
+          </p>
+        </div>
+        <div className="txt">
+          <p>Total Refunds</p>
+          <p>{refundResponse.data}</p>
+          <p className="text-[13px]">
+            <span className="text-green-500">
+              {refundResponse.stats.growth}%
+            </span>{" "}
+            more than last week
+          </p>
+        </div>
+        <div className="txt">
+          <p>Total Reports</p>
+          <p>{reportResponse.data}</p>
+          <p className="text-[13px]">
+            <span className="text-green-500">
+              {reportResponse.stats.growth}%
+            </span>{" "}
+            more than last week
+          </p>
+        </div>
+      </div>
+    );
+  } catch (error) {
+    throw error;
+  }
   // Fetch data for each category
-  const userResponse = await GrowthAnalysis("/dashboard/users", "createdAt");
-  const productResponse = await GrowthAnalysis(
-    "/dashboard/products",
-    "createdAt"
-  );
-  const orderResponse = await GrowthAnalysis("/dashboard/orders", "createdAt");
-  const refundResponse = await GrowthAnalysis(
-    "/dashboard/refunds",
-    "createdAt"
-  );
-  const reportResponse = await GrowthAnalysis(
-    "/dashboard/reports",
-    "createdAt"
-  );
+};
 
-  // Check for errors in any of the responses and return specific error message
-  if (userResponse.error) {
-    return <Message data={userResponse.error} />;
-  }
-  if (productResponse.error) {
-    return <Message data={productResponse.error} />;
-  }
-  if (orderResponse.error) {
-    return <Message data={orderResponse.error} />;
-  }
-  if (refundResponse.error) {
-    return <Message data={refundResponse.error} />;
-  }
-  if (reportResponse.error) {
-    return <Message data={reportResponse.error} />;
-  }
+export default Header;
 
-  // Render the component with fetched data if no errors
-  return (
-    <div className="flex justify-between gap-3 overflow-auto no-scrollbar">
-      <div className="txt">
-        <p>Total Users</p>
-        <p>{userResponse.data}</p>
-        <p className="text-[13px]">
-          <span className="text-green-500">{userResponse.stats.growth}%</span>{" "}
-          more than last week
-        </p>
-      </div>
-      <div className="txt">
-        <p>Total Products</p>
-        <p>{productResponse.data}</p>
-        <p className="text-[13px]">
-          <span className="text-green-500">
-            {productResponse.stats.growth}%
-          </span>{" "}
-          more than last week
-        </p>
-      </div>
-      <div className="txt">
-        <p>Total Orders</p>
-        <p>{orderResponse.data}</p>
-        <p className="text-[13px]">
-          <span className="text-green-500">{orderResponse.stats.growth}%</span>{" "}
-          more than last week
-        </p>
-      </div>
-      <div className="txt">
-        <p>Total Refunds</p>
-        <p>{refundResponse.data}</p>
-        <p className="text-[13px]">
-          <span className="text-green-500">{refundResponse.stats.growth}%</span>{" "}
-          more than last week
-        </p>
-      </div>
-      <div className="txt">
-        <p>Total Reports</p>
-        <p>{reportResponse.data}</p>
-        <p className="text-[13px]">
-          <span className="text-green-500">{reportResponse.stats.growth}%</span>{" "}
-          more than last week
-        </p>
-      </div>
-    </div>
-  );
- };
-
- export default Header;
-*/
-
+/*
 import React from "react";
 import Message from "../message/message";
 import GrowthAnalysis from "../util/growthAnalysis";
@@ -144,3 +157,4 @@ const Header = async () => {
 };
 
 export default Header;
+*/
