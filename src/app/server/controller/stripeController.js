@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import Product from "../models/product.model";
 import Order from "../models/order.model ";
 import { sendEmailWithInvoice } from "@/component/util/email";
+import { headers } from "next/headers";
+import User from "../models/user.model";
 const stripe = new Stripe(process.env.STRIPE_SECRET); // Replace `process.env.STRIPE_SECRET_KEY` with your actual secret key
 
 const fetchActiveProducts = async () => {
@@ -99,9 +101,7 @@ export const createStripeProduct = async (req) => {
       client_reference_id: req.user._id, // This ensures receipt emails are set up
       line_items: lineItems.filter(Boolean),
       mode: "payment",
-      success_url: `${req.headers.get(
-        "origin"
-      )}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.headers.get("origin")}/success`, //?session_id={CHECKOUT_SESSION_ID},
       cancel_url: `${req.headers.get("origin")}/cancel`,
       payment_intent_data: {
         receipt_email: req.user.email,
@@ -150,15 +150,105 @@ export const createStripeProduct = async (req) => {
   }
 };
 
-export const captureSuccessPayment = async (req, sessionId) => {
-  let doc;
+// export const captureSuccessPayment = async (req, sessionId) => {
+//   let doc;
+//   try {
+//     const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+//     // Process the payment session details
+//     const { payment_status, invoice } = session;
+
+//     if (payment_status === "paid" && invoice) {
+//       const lineItems = await stripe.checkout.sessions.listLineItems(
+//         session.id,
+//         {
+//           expand: ["data.price.product"],
+//         }
+//       );
+
+//       const invoiceDe = await stripe.invoices.retrieve(invoice);
+//       const existingInvoice = await Order.findOne({
+//         invoiceId: invoiceDe.number,
+//         user: req?.user?._id,
+//       });
+
+//       if (!existingInvoice) {
+//         lineItems.data.forEach(async (item) => {
+//           const productId = item.price.product.metadata._id; // Assuming you stored _id in metadata
+//           const quantity = item.quantity;
+//           const product = await Product.findById(productId);
+
+//           if (product) {
+//             product.stock -= quantity;
+//             await product.save();
+//           }
+//         });
+//         const shippingId = JSON.parse(session.metadata.shippingInfo)._id;
+
+//         doc = await Order.create({
+//           user: req?.user?._id,
+//           invoiceId: invoiceDe.number,
+//           invoiceLink: invoiceDe.hosted_invoice_url,
+//           amount: session.amount_total / 100,
+
+//           shippingInfo: shippingId,
+//         });
+//         await sendEmailWithInvoice(req?.user, invoiceDe.hosted_invoice_url);
+//         return { session, statusCode: 200 };
+//       }
+//     } else {
+//       throw new AppError("you need to complete your payment", 400);
+//     }
+//     return { data: null, statusCode: 200 };
+//   } catch (error) {
+//     console.log("error", error);
+//     if (doc) {
+//       await Order.findByIdAndDelete(doc._id);
+//     }
+//     throw error;
+//   }
+// };
+export const handleStripeWebhook = async (req) => {
+  // const sig = req.headers["stripe-signature"];
+  const signature = headers().get("stripe-signature");
+
+  let event;
+
+  const text = await req.text();
+
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    event = stripe.webhooks.constructEvent(
+      text, // Ensure you have access to the raw body in your request
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    throw new AppError("Webhook signature verification failed.", 400);
+  }
 
-    // Process the payment session details
-    const { payment_status, invoice } = session;
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
 
-    if (payment_status === "paid" && invoice) {
+    // Call your existing captureSuccessPayment logic here
+    return await captureSuccessPayment(req, session.id);
+  }
+
+  // Other webhook event types can be handled here
+
+  return { received: true };
+};
+
+const captureSuccessPayment = async (req, sessionId) => {
+  let order;
+  try {
+    const session = await stripe.checkout.sessions.retrieve(
+      sessionId
+      //    {
+      //   expand: ["line_items"],
+      // }
+    );
+
+    if (session.payment_status === "paid") {
       const lineItems = await stripe.checkout.sessions.listLineItems(
         session.id,
         {
@@ -166,10 +256,16 @@ export const captureSuccessPayment = async (req, sessionId) => {
         }
       );
 
-      const invoiceDe = await stripe.invoices.retrieve(invoice);
+      const user = await User.findById(session.client_reference_id);
+
+      if (!user) {
+        throw new AppError("There is no user related to that Email.", 400);
+      }
+
+      const invoiceDe = await stripe.invoices.retrieve(session.invoice);
       const existingInvoice = await Order.findOne({
         invoiceId: invoiceDe.number,
-        user: req?.user?._id,
+        user: user._id,
       });
 
       if (!existingInvoice) {
@@ -183,26 +279,26 @@ export const captureSuccessPayment = async (req, sessionId) => {
             await product.save();
           }
         });
+
         const shippingId = JSON.parse(session.metadata.shippingInfo)._id;
 
-        doc = await Order.create({
-          user: req?.user?._id,
+        order = await Order.create({
+          user: user?._id,
           invoiceId: invoiceDe.number,
           invoiceLink: invoiceDe.hosted_invoice_url,
           amount: session.amount_total / 100,
 
           shippingInfo: shippingId,
         });
-        await sendEmailWithInvoice(req?.user, invoiceDe.hosted_invoice_url);
+        await sendEmailWithInvoice(user, invoiceDe.hosted_invoice_url);
         return { session, statusCode: 200 };
       }
     } else {
-      throw new AppError("you need to complete your payment", 400);
+      throw new AppError("Payment not completed.", 400);
     }
-    return { data: null, statusCode: 200 };
   } catch (error) {
-    if (doc) {
-      await Order.findByIdAndDelete(doc._id);
+    if (order) {
+      await Order.findByIdAndDelete(order._id);
     }
     throw error;
   }

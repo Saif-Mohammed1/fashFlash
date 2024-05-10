@@ -33,11 +33,9 @@ const ProductSchema = new Schema(
       },
       min: 0,
     },
-    discountExpire: {
-      type: Date,
+    discountExpire: Date,
 
-      // select: false,
-    },
+    // select: false,
     images: {
       type: [String],
       required: [true, "image must be required"],
@@ -130,7 +128,7 @@ ProductSchema.pre(/^find/, function (next) {
 // Set discount expiration date before saving the document
 ProductSchema.pre("save", function (next) {
   // this points to the current query
-  if (this.discount && this.discount > 0) {
+  if (this.discount && this.discount > 0 && this.isNew) {
     // Default to 7 days from the current date
     this.discountExpire = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
@@ -143,7 +141,7 @@ ProductSchema.post(/^find/, async function (docs, next) {
   try {
     // Ensure `docs` is an array (it should be for `find`)
     if (!Array.isArray(docs)) {
-      if (docs.discountExpire < currentDate) {
+      if (docs?.discountExpire && docs?.discountExpire < currentDate) {
         docs.discount = 0;
 
         docs.discountExpire = undefined;
@@ -155,7 +153,7 @@ ProductSchema.post(/^find/, async function (docs, next) {
     // Filter out documents with null user and update discount if discountExpire is less than the current date
     const filteredDocs = docs.filter((doc) => doc.user !== null);
     const savePromises = filteredDocs.map(async (doc) => {
-      if (doc.discountExpire < currentDate) {
+      if (docs?.discountExpire && doc?.discountExpire < currentDate) {
         doc.discount = 0;
 
         doc.discountExpire = undefined;

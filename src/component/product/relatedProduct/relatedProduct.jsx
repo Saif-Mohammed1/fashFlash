@@ -15,7 +15,7 @@ const RelatedProducts = ({ relatedProducts }) => {
               key={product._id}
               className="card border p-4 hover:shadow-lg transition-shadow relative w-fit shadow-lg rounded bg-gray-200/70 /border-red-500 min-w-fit overflow-hidden"
             >
-              {product.discount && (
+              {product.discount > 0 && (
                 <div className="absolute top-4 -left-9 text-center -rotate-45	 bg-red-500 text-white px-2 py-1 rounded-tl-md rounded-br-md shadow-md w-[149px]  ">
                   {((product.discount / product.price) * 100).toFixed(0)}% OFF
                 </div>

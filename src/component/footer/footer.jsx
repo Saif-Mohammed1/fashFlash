@@ -6,7 +6,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8 mt-4">
+    <footer className="bg-gray-800 text-white py-8 px-3 mt-4">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <div className="text-center md:text-left">
           <h3 className="text-lg font-bold mb-2">fashFlash </h3>
