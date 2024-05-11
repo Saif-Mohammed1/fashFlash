@@ -46,7 +46,7 @@ const List = ({ session }) => {
       if (result.isConfirmed) {
         const user = await fetchApi("/user", { method: "DELETE" });
         if (user.error) {
-          return <Message data={user} />;
+          return <Message error={user.error} />;
         }
         // Send a request to the server to clear the JWT cookie
         await signOut();
@@ -54,11 +54,12 @@ const List = ({ session }) => {
           method: "POST",
           credentials: "include", // Important to include credentials for cookies
         });
+
+        if (logout.error) {
+          return <Message error={logout.error} />;
+        }
+        toast.success("Account successfully deleted.");
       }
-      if (logout.error) {
-        return <Message data={logout} />;
-      }
-      toast.success("Account successfully deleted.");
     } catch (error) {
       toast.error(
         error?.message ||

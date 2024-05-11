@@ -63,13 +63,15 @@ const Refunds = ({ data = [], title = "" }) => {
   };
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/refunds/" + id,
         "Order has been deleted successful"
       );
-      setRefundList((prevList) =>
-        prevList.filter((refund) => refund._id !== id)
-      );
+      if (message) {
+        setRefundList((prevList) =>
+          prevList.filter((refund) => refund._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||

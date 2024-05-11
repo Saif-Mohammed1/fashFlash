@@ -38,12 +38,15 @@ const Users = ({ users }) => {
 
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/users/" + id,
         "user has been deleted successful"
       );
-
-      setUsersList((prevUsers) => prevUsers.filter((user) => user._id !== id));
+      if (message) {
+        setUsersList((prevUsers) =>
+          prevUsers.filter((user) => user._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||

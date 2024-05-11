@@ -61,13 +61,15 @@ const Reports = ({ data = [], title = "" }) => {
   };
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/reports/" + id,
         "Report has been deleted successful"
       );
-      setReportList((prevList) =>
-        prevList.filter((report) => report._id !== id)
-      );
+      if (message) {
+        setReportList((prevList) =>
+          prevList.filter((report) => report._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||

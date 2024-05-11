@@ -60,13 +60,15 @@ const ContactUs = ({ data = [] }) => {
   };
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/contact-us/" + id,
         "contact has been deleted successful"
       );
-      setContactList((prevList) =>
-        prevList.filter((contact) => contact._id !== id)
-      );
+      if (message) {
+        setContactList((prevList) =>
+          prevList.filter((contact) => contact._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||

@@ -63,11 +63,15 @@ const Orders = ({ data = [], title = "" }) => {
   };
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/orders/" + id,
         "Order has been deleted successful"
       );
-      setOrderList((prevList) => prevList.filter((order) => order._id !== id));
+      if (message) {
+        setOrderList((prevList) =>
+          prevList.filter((order) => order._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||

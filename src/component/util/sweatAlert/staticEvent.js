@@ -22,6 +22,7 @@ export const DeleteEvent = async (endPoint, message) => {
         throw error;
       }
       toast.success(message || "Process has been successfully");
+      return { message: "success" };
     } else {
       toast.error("Process has been canceled");
     }

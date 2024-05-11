@@ -167,13 +167,15 @@ const ProductDashboard = ({ products }) => {
 
   const onDelete = async (id) => {
     try {
-      await DeleteEvent(
+      const { message } = await DeleteEvent(
         "/dashboard/products/" + id,
         "product has been deleted successful"
       );
-      setProductList((prevList) =>
-        prevList.filter((product) => product._id !== id)
-      );
+      if (message) {
+        setProductList((prevList) =>
+          prevList.filter((product) => product._id !== id)
+        );
+      }
     } catch (error) {
       toast.error(
         error?.message ||
