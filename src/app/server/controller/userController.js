@@ -1,7 +1,7 @@
 import AppError from "@/component/util/appError";
 import User from "../models/user.model";
 import { createSendToken } from "./authController";
-import { destroyImage } from "@/component/util/cloudinary";
+// import { destroyImage } from "@/component/util/cloudinary";
 import { UTApi } from "uploadthing/server";
 
 // export const verifyEmail = async (req) => {
@@ -282,6 +282,35 @@ export const deleteProductByUser = async (req, Model) => {
   }
 };
 
+export const updateUserPhoto = async (req, Model) => {
+  try {
+    const { photo, public_id } = await req.json();
+    if (!photo) {
+      throw new AppError("photo must be required", 400);
+    }
+    if (!public_id) {
+      throw new AppError("public_id must be required", 400);
+    }
+    const user = await Model.findById(req.user._id); //.select("+public_id");
+
+    if (!user) {
+      throw new AppError("No user found with that ID", 404);
+    }
+    if (user.public_id) {
+      const utapi = new UTApi();
+      await utapi.deleteFiles(user.public_id);
+
+      // for cloudainry
+      // await destroyImage(public_id);
+    }
+    user.public_id = public_id;
+    user.photo = photo;
+    await user.save();
+    return { data: user, statusCode: 200 };
+  } catch (error) {
+    throw error;
+  }
+};
 // export const updatePassword = async (req) => {
 //   try {
 //     const { password, confirmPassword, newPassword, email } = await req.json();

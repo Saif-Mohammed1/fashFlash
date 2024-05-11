@@ -60,8 +60,8 @@ const AccountDetails = () => {
     const public_id = e[0].key;
     const photo = e[0].url;
     try {
-      const { error, data } = await fetchApi("/user", {
-        method: "PATCH",
+      const { error, data } = await fetchApi("/user/photo", {
+        method: "PUT",
         body: JSON.stringify({
           public_id,
           photo,
