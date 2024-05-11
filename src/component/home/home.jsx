@@ -41,30 +41,32 @@ const Home = ({ products, categories, pageCount }) => {
       {/* </Drawer> */}
       {/* <div className="flex flex-col flex-wrap mx-3 w-full justify-between "> */}
       <div className="flex flex-col mx-3 w-full ">
-        {productsList && (
-          <div className="grid col mx-auto mx-w-[1500px] justify-center ">
-            {productsList?.map((product) => {
-              favorite &&
-                favorite.map((prod) => {
-                  if ((prod?.product?._id || prod?.product) === product._id) {
-                    return (product.favorites = true);
-                  }
-                  /* else {
+        <div className="h-[103vh] overflow-y-auto  no-scrollbar">
+          {productsList && (
+            <div className="grid col mx-auto mx-w-[1500px] justify-center ">
+              {productsList?.map((product) => {
+                favorite &&
+                  favorite.map((prod) => {
+                    if ((prod?.product?._id || prod?.product) === product._id) {
+                      return (product.favorites = true);
+                    }
+                    /* else {
                     ////console.log("else");
                     return (product.favorite = false);
                   } */
-                });
+                  });
 
-              return (
-                <ProductItem
-                  product={product}
-                  key={product._id}
-                  Delete={() => onDelete(product._id)} // Wrap onDelete in an arrow function
-                />
-              );
-            })}
-          </div>
-        )}
+                return (
+                  <ProductItem
+                    product={product}
+                    key={product._id}
+                    Delete={() => onDelete(product._id)} // Wrap onDelete in an arrow function
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
         <div className="/my-4 mt-auto ">
           {" "}
           <Paginate pageCount={pageCount} />
