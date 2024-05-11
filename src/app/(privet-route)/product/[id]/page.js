@@ -1,7 +1,10 @@
+export const dynamic = "force-dynamic";
+
 // import ProductDetails from "@/component/product/product-details/productDetails";
 import Message from "@/component/message/message";
 import ProductDetailsMo from "@/component/product/product-details/productDetailsmo";
 import fetchApi from "@/component/util/fetchApi";
+import { headers } from "next/headers";
 
 export const metadata = {
   title: "Product Details",
@@ -9,7 +12,9 @@ export const metadata = {
 };
 const getData = async (id) => {
   try {
-    const { data, error } = await fetchApi(`/product/${id}`);
+    const { data, error } = await fetchApi(`/product/${id}`, {
+      headers: headers(),
+    });
     if (error) throw error;
     return { data: data?.data || [] };
   } catch (error) {
@@ -20,10 +25,10 @@ const Page = async ({ params }) => {
   try {
     const id = params.id;
     const { data, error } = await getData(id);
-
     if (error) {
       return <Message error={error} />;
     }
+    // console.log("data", data);
     return <ProductDetailsMo product={data} />;
   } catch (error) {
     throw error;

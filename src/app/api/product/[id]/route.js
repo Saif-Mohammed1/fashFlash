@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// export const revalidate = 0;
+// export const dynamic = "force-dynamic";
 
 import { isAuth, restrictTo } from "@/app/server/controller/authController";
 import ErrorHandler from "@/app/server/controller/errorController";
@@ -13,11 +14,13 @@ export const GET = async (req, { params }) => {
 
   try {
     await connectDB();
+
     //.catch(() => //console.log("couldn't connect to db"));
     // await isAuth(req);
     const { data, statusCode } = await getOne(req, Product, {
       path: "reviews",
     });
+    // revalidatePath(req.url);
     return NextResponse.json({ data }, { status: statusCode });
   } catch (error) {
     return ErrorHandler(error, req);
