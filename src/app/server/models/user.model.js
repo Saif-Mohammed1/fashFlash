@@ -49,6 +49,7 @@ const UserSchema = new Schema({
     type: String,
     default: "user.jpg",
   },
+  public_id: String,
   role: {
     type: String,
 
