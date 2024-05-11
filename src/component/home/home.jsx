@@ -59,8 +59,8 @@ const Home = ({ products, categories, pageCount }) => {
                 return (
                   <ProductItem
                     product={product}
-                    key={product._id}
-                    Delete={() => onDelete(product._id)} // Wrap onDelete in an arrow function
+                    key={product._id.toString()}
+                    Delete={() => onDelete(product._id.toString())} // Wrap onDelete in an arrow function
                   />
                 );
               })}

@@ -70,7 +70,7 @@ const Shipping = ({ address }) => {
               {address &&
                 address.map((addressItem) => (
                   <div
-                    key={addressItem._id}
+                    key={addressItem._id.toString()}
                     className={`bg-white/60 shadow-lg rounded-lg p-4 border cursor-pointer relative overflow-hidden ${
                       selectedShippingAddress?._id === addressItem._id
                         ? "border-blue-500"
@@ -141,7 +141,7 @@ const Shipping = ({ address }) => {
               {cartItems.length > 0 &&
                 cartItems.map((cartItem) => (
                   <div
-                    key={cartItem._id}
+                    key={cartItem._id.toString()}
                     className="flex items-center justify-between border-b py-4"
                   >
                     <div className="flex items-center space-x-4">

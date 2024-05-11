@@ -89,7 +89,7 @@ const CartItem = () =>
 
             return (
               <div
-                key={item?._id}
+                key={item?._id.toString()}
                 className="flex gap-1 sm:gap-0 space-y-2 sm:space-y-0  flex-col sm:flex-row items-center justify-between border-b py-2 md:space-x-2 mt-1 "
               >
                 <div
