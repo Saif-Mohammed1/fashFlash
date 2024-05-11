@@ -1,5 +1,5 @@
 import AppError from "@/component/util/appError";
-import Order from "../models/order.model ";
+import Order from "../models/order.model";
 import Address from "../models/address.model";
 
 export const createReviews = async (req, model) => {
@@ -8,15 +8,15 @@ export const createReviews = async (req, model) => {
     const { rating, reviewText } = await req.json();
 
     if (!rating) {
-      throw new AppError("Rating is required", 404);
+      throw new AppError("Rating is required", 400);
     }
     if (!reviewText) {
-      throw new AppError("reviewText is required", 404);
+      throw new AppError("Review text is required", 400);
     }
 
     if (rating < 1) {
       throw new AppError(
-        "Rating cannot be less than 1. Current rate is: " + rating,
+        "Rating cannot be less than 1. Current rating is: " + rating,
         400
       );
     }
@@ -27,30 +27,30 @@ export const createReviews = async (req, model) => {
       reviewText,
     });
     return {
-      // data: doc,
       data: doc,
       statusCode: 201,
     };
   } catch (error) {
-    //console.log("error createReviews", error);
     if (doc) {
-      await model.findOneAndDelete(
-        { product: req.id, user: req.user._id } // Condition to find the document
-      );
+      await model.findOneAndDelete({
+        product: req.id,
+        user: req.user._id,
+      });
     }
     throw error;
   }
 };
+
 export const deleteReview = async (req, model) => {
   try {
-    const doc = await model.findOneAndDelete(
-      { product: req.id, user: req.user._id } // Condition to find the document
-    );
+    const doc = await model.findOneAndDelete({
+      product: req.id,
+      user: req.user._id,
+    });
     if (!doc) {
-      throw new AppError("No documents found with", 404);
+      throw new AppError("No review found for deletion", 404);
     }
     return {
-      // data: doc,
       data: null,
       statusCode: 200,
     };
@@ -63,7 +63,6 @@ export const checkReview = async (req, model) => {
   try {
     const order = await Order.findOne({
       user: req.user._id,
-      // product: req.id,
     });
 
     if (!order) {
@@ -74,7 +73,7 @@ export const checkReview = async (req, model) => {
     }
     if (order.status !== "completed") {
       throw new AppError(
-        "Thank you for your interest in leaving a review! Please note that you need to wait until  your order complete before you can leave a review. Once your order is completed, you'll be able to share your feedback with us. We appreciate your patience and understanding",
+        "Thank you for your interest in leaving a review! Please note that you need to wait until your order is completed before you can leave a review. Once your order is completed, you'll be able to share your feedback with us. We appreciate your patience and understanding",
         404
       );
     }
@@ -86,7 +85,7 @@ export const checkReview = async (req, model) => {
     if (review) {
       throw new AppError(
         "You have already submitted a review for this product. Only one review per product is allowed.",
-        404
+        400
       );
     }
     return {
@@ -94,6 +93,6 @@ export const checkReview = async (req, model) => {
       statusCode: 200,
     };
   } catch (error) {
-    throw error; // Rethrow the error to be caught by the caller
+    throw error;
   }
 };
