@@ -68,7 +68,7 @@ export default async function Root({ searchParams }) {
       // <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
 
       <Home
-        products={products}
+        products={JSON.parse(JSON.stringify(products))}
         categories={categories}
         pageCount={pageCount}
         //  fav={fav}
