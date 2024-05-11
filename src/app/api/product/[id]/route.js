@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { isAuth, restrictTo } from "@/app/server/controller/authController";
 import ErrorHandler from "@/app/server/controller/errorController";
 import { getOne, updateOne } from "@/app/server/controller/factoryController";
