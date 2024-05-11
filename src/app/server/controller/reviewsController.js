@@ -5,13 +5,20 @@ import Address from "../models/address.model";
 export const createReviews = async (req, model) => {
   let doc;
   try {
-    let { rating, reviewText } = await req.json();
+    const { rating, reviewText } = await req.json();
 
     if (!rating) {
       throw new AppError("Rating is required", 404);
     }
     if (!reviewText) {
       throw new AppError("reviewText is required", 404);
+    }
+
+    if (rating < 1) {
+      throw new AppError(
+        "Rating cannot be less than 1. Current rate is: " + rating,
+        400
+      );
     }
     doc = await model.create({
       user: req.user._id,
@@ -30,8 +37,8 @@ export const createReviews = async (req, model) => {
       await model.findOneAndDelete(
         { product: req.id, user: req.user._id } // Condition to find the document
       );
-      throw error;
     }
+    throw error;
   }
 };
 export const deleteReview = async (req, model) => {

@@ -32,6 +32,7 @@ export const POST = async (req, { params }) => {
     const { data, statusCode } = await createReviews(req, Reviews);
     return NextResponse.json({ data }, { status: statusCode });
   } catch (error) {
+    console.log("error", error);
     return ErrorHandler(error, req);
   }
 };
