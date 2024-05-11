@@ -45,6 +45,7 @@ const Home = ({ products, categories, pageCount }) => {
           {productsList && (
             <div className="grid col mx-auto mx-w-[1500px] justify-center ">
               {productsList?.map((product) => {
+                product._id = product._id.toString();
                 favorite &&
                   favorite.map((prod) => {
                     if ((prod?.product?._id || prod?.product) === product._id) {
@@ -59,8 +60,8 @@ const Home = ({ products, categories, pageCount }) => {
                 return (
                   <ProductItem
                     product={product}
-                    key={product._id.toString()}
-                    Delete={() => onDelete(product._id.toString())} // Wrap onDelete in an arrow function
+                    key={product._id}
+                    Delete={() => onDelete(product._id)} // Wrap onDelete in an arrow function
                   />
                 );
               })}

@@ -59,9 +59,8 @@ export default Page;
         <div className="grid col p-5 m-5">
           {data &&
             data.map((product) => {
-              return (
-                <ProductItem product={product} key={product._id.toString()} />
-              );
+              product._id = product._id.toString();
+              return <ProductItem product={product} key={product._id} />;
             })}
         </div>
       </section>

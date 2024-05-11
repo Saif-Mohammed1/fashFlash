@@ -13,8 +13,9 @@ const FavoriteCart = () => {
           // Assuming each item in data has a 'product' object
           const product = item.product || item;
           product.favorites = true; // Safely set favorite property
+          product._id = product._id.toString();
 
-          return <ProductItem product={product} key={product._id.toString()} />;
+          return <ProductItem product={product} key={product._id} />;
         })}
       </div>
     );
