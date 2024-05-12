@@ -34,7 +34,7 @@ export const CartProvider = ({ children, session }) => {
         if (error) throw error;
         ////console.log("data cart", data?.data);
 
-        setCartItems(data?.data);
+        setCartItems((prevItems) => [...prevItems, ...data?.data]);
       } catch (error) {
         toast.error(
           error?.message ||
@@ -57,7 +57,7 @@ export const CartProvider = ({ children, session }) => {
         const { data, error } = await fetchApi("/favorite");
         if (error) throw error;
         ////console.log("data fav", data.data);
-        setFavorite(data?.data || []);
+        setFavorite((prevItems) => [...prevItems, ...data?.data]);
       } catch (error) {
         toast.error(
           error?.message ||
