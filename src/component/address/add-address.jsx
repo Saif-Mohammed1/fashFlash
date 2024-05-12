@@ -21,9 +21,9 @@ const Addaddress = ({
 
   const buttonValue =
     button === "add" && loading
-      ? "Adding"
+      ? "Adding..."
       : button !== "add" && loading
-      ? "Updating"
+      ? "Updating..."
       : button === "add"
       ? "Add"
       : "Update";

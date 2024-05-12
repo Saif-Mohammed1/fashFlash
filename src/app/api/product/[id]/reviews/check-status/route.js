@@ -12,7 +12,6 @@ export const GET = async (req, { params }) => {
     await connectDB();
     //.catch(() => //console.log("couldn't connect to db"));
     await isAuth(req);
-
     //console.log("req.user", req.user);
     const { data, statusCode } = await checkReview(req, Reviews);
     return NextResponse.json({ data }, { status: statusCode });

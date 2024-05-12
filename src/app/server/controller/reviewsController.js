@@ -64,8 +64,16 @@ export const checkReview = async (req, model) => {
       user: req.user._id,
       // product: req.id,
     });
-
     if (!order) {
+      throw new AppError(
+        "You need to buy that product first to leave a review",
+        404
+      );
+    }
+    const matchProduct = order.product.find(
+      (productId) => productId === req.id
+    );
+    if (!matchProduct) {
       throw new AppError(
         "You need to buy that product first to leave a review",
         404

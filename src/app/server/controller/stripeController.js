@@ -268,26 +268,27 @@ const captureSuccessPayment = async (req, sessionId) => {
         user: user._id,
       });
 
+      const productsId = [];
       if (!existingInvoice) {
-        lineItems.data.forEach(async (item) => {
+        for (const item of lineItems.data) {
           const productId = item.price.product.metadata._id; // Assuming you stored _id in metadata
           const quantity = item.quantity;
           const product = await Product.findById(productId);
 
           if (product) {
             product.stock -= quantity;
+            productsId.push(productId);
             await product.save();
           }
-        });
+        }
 
         const shippingId = JSON.parse(session.metadata.shippingInfo)._id;
-
         order = await Order.create({
           user: user?._id,
           invoiceId: invoiceDe.number,
           invoiceLink: invoiceDe.hosted_invoice_url,
           amount: session.amount_total / 100,
-
+          product: productsId,
           shippingInfo: shippingId,
         });
         await sendEmailWithInvoice(user, invoiceDe.hosted_invoice_url);

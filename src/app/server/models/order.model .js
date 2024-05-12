@@ -7,6 +7,15 @@ const OrderSchema = new Schema({
     ref: "User",
     required: [true, "Order must belong to a user."],
   },
+  shippingInfo: {
+    type: Schema.ObjectId,
+    ref: "Address",
+    required: [true, "Order must belong to a Address."],
+  },
+  product: {
+    type: [String],
+    required: [true, "product id must be required."],
+  },
   status: {
     type: String,
     required: true,
@@ -28,11 +37,6 @@ const OrderSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  },
-  shippingInfo: {
-    type: Schema.ObjectId,
-    ref: "Address",
-    required: [true, "Order must belong to a Address."],
   },
 });
 OrderSchema.pre(/^find/, function (next) {
