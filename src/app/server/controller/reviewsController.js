@@ -62,7 +62,7 @@ export const checkReview = async (req, model) => {
   try {
     const order = await Order.findOne({
       user: req.user._id,
-      // product: req.id,
+      product: { $in: [req.id] }, // Use $in to find if req.id exists in the product array
     });
     if (!order) {
       throw new AppError(
@@ -70,15 +70,15 @@ export const checkReview = async (req, model) => {
         404
       );
     }
-    const matchProduct = order.product.find(
-      (productId) => productId === req.id
-    );
-    if (!matchProduct) {
-      throw new AppError(
-        "You need to buy that product first to leave a review",
-        404
-      );
-    }
+    // const matchProduct = order.product.find(
+    //   (productId) => productId === req.id
+    // );
+    // if (!matchProduct) {
+    //   throw new AppError(
+    //     "You need to buy that product first to leave a review",
+    //     404
+    //   );
+    // }
     if (order.status !== "completed") {
       throw new AppError(
         "Thank you for your interest in leaving a review! Please note that you need to wait until  your order complete before you can leave a review. Once your order is completed, you'll be able to share your feedback with us. We appreciate your patience and understanding",
