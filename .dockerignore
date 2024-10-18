@@ -1,0 +1,21 @@
+# Ignore node_modules directory
+/.next
+/node_modules
+docker-compose*
+
+# Ignore npm debug log
+npm-debug.log
+
+# Ignore Dockerfile and .dockerignore itself
+Dockerfile
+.dockerignore
+
+# Ignore any other files or directories you don't want to include in the image
+.git
+.env
+.env*
+dist
+coverage
+
+dumy.json
+whatToDo.md

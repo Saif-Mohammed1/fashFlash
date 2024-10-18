@@ -23,26 +23,42 @@
 import mongoose from "mongoose";
 
 let isConnected = false;
+const MAX_RETRIES = 3; // Number of retries
+const RETRY_DELAY = 3000; // Wait 3 seconds before retrying
 
-const connectDB = async () => {
-  if (isConnected) {
-    //console.log("Using existing MongoDB connection");
-    // getDB();
-    return;
-  }
+const connectDB = async (retryCount = 0) => {
+  // if (isConnected) {
+  //   return;
+  // }
+
   try {
     const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      throw new Error("MongoDB URI is required");
+    }
 
+    // Attempt to connect to MongoDB
     await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      dbName: "e-commerce",
     });
 
     isConnected = true;
-    //console.log("MongoDB connected");
+
+    return mongoose.connection;
   } catch (error) {
-    //console.error("Error connecting to MongoDB:", error);
-    throw error;
+    console.error("Error connecting to MongoDB:", error);
+
+    // // Retry logic
+    if (retryCount < MAX_RETRIES) {
+      console.log(`Retrying connection (${retryCount + 1}/${MAX_RETRIES})...`);
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY)); // Wait before retrying
+      return connectDB(retryCount + 1);
+    } else {
+      console.error("Max retries reached. Could not connect to MongoDB.");
+      throw error; // Stop if max retries exceeded
+    }
   }
 };
 
@@ -54,9 +70,8 @@ const disconnectDB = async () => {
   try {
     await mongoose.disconnect();
     isConnected = false;
-    //console.log("MongoDB disconnected");
   } catch (error) {
-    //console.error("Error disconnecting from MongoDB:", error);
+    console.error("Error disconnecting from MongoDB:", error);
     throw error;
   }
 };

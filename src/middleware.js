@@ -1,46 +1,89 @@
+import { getToken } from "next-auth/jwt";
+import { withAuth } from "next-auth/middleware";
+
 import { NextResponse } from "next/server";
-
+const protectedRoutes = ["/account", "/cart", "/checkout", "/favorite"];
 const middleware = async (req) => {
-  // //console.log(" session?.user?.emailVerify", req);
-  // if (
-  //   session?.user &&
-  //   req.nextUrl.pathname.startsWith("/auth") &&
-  //   req.nextUrl.pathname !== "/auth/verify-email"
-  // ) {
-  //   //console.log('    req.nextUrl.pathname !== " /auth/verify-email" &&');
-
-  //   return NextResponse.redirect(new URL("/", req.url));
-  // }
-  // if (
-  //   req.nextUrl.pathname === "/auth/verify-email" &&
-  //   session?.user?.emailVerify
-  // ) {
-  //   //console.log('    req.nextUrl.pathname === " /auth/verify-email" &&');
-  //   return NextResponse.redirect(new URL("/", req.url));
-  // }
-
+  const pathname = req.nextUrl.pathname;
+  const isAuth = await getToken({ req });
+  const isAdmin = isAuth && isAuth?.role === "admin";
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  ); // //console.log(" session?.user?.emailVerify", req);
+  console.log("pathname middleware", pathname);
+  console.log("isAuth middleware", isAuth);
   if (
-    req.nextUrl.pathname === "/account/" ||
-    req.nextUrl.pathname === "/account"
+    isAuth &&
+    pathname.startsWith("/auth") &&
+    pathname !== "/auth/verify-email"
   ) {
-    return NextResponse.redirect(new URL("/account/account-details", req.url));
+    //console.log('    req.nextUrl.pathname !== " /auth/verify-email" &&');
+
+    return NextResponse.redirect(new URL("/", req.url));
   }
+  if (pathname === "/auth/verify-email" && isAuth?.emailVerify) {
+    //console.log('    req.nextUrl.pathname === " /auth/verify-email" &&');
+    return NextResponse.redirect(new URL("/", req.url));
+    // }
+  }
+  if (isAuth && pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+  if (isProtectedRoute && !isAuth) {
+    return NextResponse.redirect(new URL("/auth", req.url));
+  }
+  if (isAuth && pathname === "/account") {
+    return NextResponse.rewrite(new URL("/account/account-details", req.url));
+  }
+  if (!isAdmin && pathname.startsWith("/dashboard")) {
+    return NextResponse.rewrite(new URL("/not-found", req.url));
+  }
+  if (isAdmin && pathname.startsWith("/dashboard")) {
+    return NextResponse.next();
+  }
+  return NextResponse.next();
 };
 
-export default middleware;
-// import { withAuth } from "next-auth/middleware";
+export default withAuth(middleware, {
+  callbacks: {
+    async authorized({ token, req }) {
+      const { pathname } = req.nextUrl;
+      console.log("pathname", pathname);
+      console.log("token", token);
+      const isProtectedRoute = protectedRoutes.some((route) =>
+        pathname.startsWith(route)
+      );
+      /**  
+       * Only protect the /account route, all other routes are public
+       * 
+          ***** both are same 
+      * if (pathname.startsWith("/account")) {
+        return !!token;
+            }
+      * or return pathname.startsWith("/account") ? !!token : true;
+ */
+      if (isProtectedRoute) {
+        return !!token;
+      }
+      return true;
+      // Only protect the defined routes
+      // return isProtectedRoute ? !!token : true;
+    },
+  },
 
-// export default withAuth(
-//   // `withAuth` augments your `Request` with the user's token.
-//   function middleware(req) {
-//     console.log("nextAuth middleware triggered");
-//     console.log("Token:", req.nextauth.token);
-//   },
-//   {
-//     callbacks: {
-//       authorized: ({ token }) => !!token, //console.log("Token:", token),
-//     },
-//   }
-// );
+  pages: {},
+});
 
-// export const config = { matcher: ["/admin", "/dashboard"] };
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    // "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
+};
